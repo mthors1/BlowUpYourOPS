@@ -190,10 +190,12 @@ bool isSolvableDFS(int x, int, y) {
          isSolvableDFS(x, y - 1);
 }
 
+
 bool mazeIsSolvable() { 
   memset(visited, 0, sizeof(visited));
   return isSolvableDFS(playerX, playerY);
 }
+
 
 void generateMaze() {
   do {
@@ -207,6 +209,7 @@ void generateMaze() {
     maze[goalX][goalY] = 0;
   } while (!mazeIsSolvable());
 }
+
 
 void resetGame() {
   Serial.println("Resetting game...");
@@ -233,14 +236,16 @@ void resetGame() {
   while (!mazeIsSolvable());
 }
 
-bool checkWin() {
+
+bool checkMazeWin() {
   if (playerX == goalX && playerY == goalY) {
     return true;
   }
   return false;
 }
 
-bool mazeWinner() {
+
+bool mazeMazeWinner() {
   if (checkWin()) {
     delay(500);
     song3();
@@ -250,12 +255,177 @@ bool mazeWinner() {
 }
 
 
-void setup() {
-  
+void movePlayer(int direction){
+  int newX = playerX;
+  int newY = playerY;
 
+  if (direction == -2) newX--; // Up
+  if (direction == 2)  newX++; // Down 
+  if (direction == -1) newY--; // Left 
+  if (direction == 1)  newY++; // Right
+
+  // Debugging movement
+  Serial.print("Attempting to move to: ");
+  Serial.print(newX);
+  Serial.print(", ");
+  Serial.println(newY);
+
+  // Check if wall is hit
+  if (newX >= 0 && newX < MAZE_SIZE && newY >= 0 && newY < MAZE_SIZE) {
+    Serial.print("Maze value at position: ");
+    Serial.println(maze[newX][newY]);
+    if (maze[newX][newY] == 0) { // Valid move
+      playerX = newX;
+      playerY = newY;
+      Serial.print("Moved to: ");
+      Serial.print(playerX);
+      Serial.print(", ");
+      Serial.println(playerY);
+      successSound(); // Successful move sound
+    } else {
+      failureSound(); // Wall hit sound
+      Serial.println("Hit a wall!");
+    }
+  } else {
+    failureSound(); // Hit wall
+    Serial.println("Out of bounds!");
+  }
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
+
+void printMaze() {
+  for (int i = 0; i < maze_size; i++) {
+    for (int j = 0; j < maze_size; j++) {
+      if (i == playerX && j == playerY) {
+        Serial.print("P ");
+      } else {
+        Serial.print(maze[i][j]);
+        Serial.print(" ");
+      }
+    }
+    Serial.println();
+  }
+}
+
+
+/* Whole program set up */
+void setup() {
+  pinMode(SW_pin, INPUT_PULLUP);
+  pinMode(speaker, OUTPUT);
+  pinMode(mazeWinLED, OUTPUT);
+  pinMode(wireLED, OUTPUT);
+  Serial.begin(115200);
+  // Initialize Serial 1 connection (to central)
+  Serial1.setTX(0);
+  Serial1.setRX(1);
+  Serial1.begin(115200);
+
+  while (!Serial) {}
+  randomSeed(micros());
+
+  for (int i = 0; i < 4; i++) {
+    pinMode(wirePins[i], INPUT_PULLUP);
+    wirePulled[i] = false;
+    Serial.print("Wire ");
+    Serial.print(i);
+    Serial.print(" state: ");
+    //Serial.println(digitalRead(wirePins[i]));
+  }
+  correctWire = random(0, 4);
+}
+
+
+/* Whole Maze Game Sequence */
+bool mazeGame(){
+  generateMaze();
+  Serial.println("Generated maze: ");
+  printMaze();
+  bool playingMaze = true;
+  while (playingMaze){
+    lastPressTime = 0;
+    // If game is won, if joystick is pressed, reset game (debugging)
+    if (digitalRead(SW_pin) == LOW && checkWin() && millis() - lastPressTime > 550) {
+      resetGame();
+      lastPressTime = millis();
+    }
+    int moveDirection = readJoystick(); // Read joystick input
+
+
+    if (moveDirection != 0 && !joystickLatched) {
+      movePlayer(moveDirection);  // Update player position
+      // Check if player reached the goal
+      if (winner()){
+        playingMaze = false;
+        digitalWrite(mazeWinLED, HIGH);
+      }  
+      Serial.println("Current maze state: ");
+      printMaze();
+      joystickLatched = true; // Prevent repeat movement
+    }
+
+
+    // Once joystick returns to neutral, unlatch
+    if (moveDirection == 0) {
+      joystickLatched = false;
+    }
+
+    delay(50); // Small delay to prevent excessive polling
+  }
+
+  return playingMaze;
+}
+
+
+/* Full Wire Game Sequence */
+bool wireGame(){
+  // Debugging
+  Serial.print("Game started. Pull correct wire to win. Correct wire: ");
+  Serial.println(correctWire + 1);
+
+  bool stillPlaying = true;
+  while (stillPlaying){
+    for (int i = 0; i < 4; i++){
+      if (digitalRead(wirePins[i]) == HIGH && wirePulled[i] == false){
+        wirePulled[i] = true;
+
+        if (i == correctWire){
+          Serial.println("Correct wire Pulled");
+          stillPlaying = false;
+          song3();
+          digitalWrite(wireLED, HIGH);
+          
+        }
+        else{
+          Serial.println("Incorrect wire Pulled");
+          // UPDATE BELOW TO SUBTRACT TIME FOR INCORRECT WIRE
+          Serial2.write((uint8_t)3);
+          Serial2.write((uint8_t)0);
+        }
+      }
+    }
+    // Prevent excess polling
+    delay(50);
+  }
+  return stillPlaying;
+}
+
+
+void loop() {while (!Serial2.available()){}
+    uint8_t received = Serial2.read();
+    Serial2.write((uint8_t)0);
+    
+    if (received == 1){
+      Serial.println("Starting wire game");
+      Serial2.write((uint8_t)0); // Clear Serial2
+      while(wireGame()){}
+      Serial2.write((uint8_t)4); // Send back to main to move on to other games on other controller
+    }
+
+    if (received == 6){
+      Serial.println("MAZE GAME TIME");
+      Serial2.write((uint8_t)0); // Clear Serial2
+      while(mazeGame()){}
+      Serial2.write((uint8)7); // Start codeGameMode
+    }
 
 }

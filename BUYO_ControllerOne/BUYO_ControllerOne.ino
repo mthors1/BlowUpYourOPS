@@ -2,7 +2,7 @@
 
 // Maze game pins
 const int SW_Pin = 16; // digital pin for switch output
-const int X_pin = 27; // analog pin for X output on joystick
+const int X_Pin = 27; // analog pin for X output on joystick
 const int Y_Pin = 26; // analog pin for Y output on joystick
 const int speaker = 28; // digital pin for speaker output
 const int mazeWinLED = 18; // digital pin for win LED
@@ -162,8 +162,8 @@ void song3() {
 
 int readJoystick() {
   // Map potentiometer readings to 1-100 scale
-  xpos = map(analogRead(X_pin), 0, 1023, 1, 100);
-  ypos = map(analogRead(Y_pin), 0, 1023, 1, 100);
+  xpos = map(analogRead(X_Pin), 0, 1023, 1, 100);
+  ypos = map(analogRead(Y_Pin), 0, 1023, 1, 100);
 
   // Based on 1-100 scale, read directional inputs
   if (xpos < 40) { return -1; } // go left
@@ -177,7 +177,7 @@ int readJoystick() {
 
 bool visited[maze_size][maze_size];
 
-bool isSolvableDFS(int x, int, y) {
+bool isSolvableDFS(int x, int y) {
   if (x < 0 || x > maze_size || y < 0 || y >= maze_size) return false;
   if (maze[x][y] == 1 || visited[x][y]) return false;
   if (x == goalX && y == goalY) return true;
@@ -201,7 +201,7 @@ void generateMaze() {
   do {
     randomSeed(micros());
     for (int i = 0; i < maze_size; i++) {
-      for (int j = 0; j < naze_size; j++) {
+      for (int j = 0; j < maze_size; j++) {
         maze[i][j] = (random(0, 100) < 30) ? 1 : 0;
       }
     }
@@ -245,8 +245,8 @@ bool checkMazeWin() {
 }
 
 
-bool mazeMazeWinner() {
-  if (checkWin()) {
+bool mazeWinner() {
+  if (checkMazeWin()) {
     delay(500);
     song3();
     return true;
@@ -271,7 +271,7 @@ void movePlayer(int direction){
   Serial.println(newY);
 
   // Check if wall is hit
-  if (newX >= 0 && newX < MAZE_SIZE && newY >= 0 && newY < MAZE_SIZE) {
+  if (newX >= 0 && newX < maze_size && newY >= 0 && newY < maze_size) {
     Serial.print("Maze value at position: ");
     Serial.println(maze[newX][newY]);
     if (maze[newX][newY] == 0) { // Valid move
@@ -310,10 +310,10 @@ void printMaze() {
 
 /* Whole program set up */
 void setup() {
-  pinMode(SW_pin, INPUT_PULLUP);
+  pinMode(SW_Pin, INPUT_PULLUP);
   pinMode(speaker, OUTPUT);
   pinMode(mazeWinLED, OUTPUT);
-  pinMode(wireLED, OUTPUT);
+  pinMode(wireWinLED, OUTPUT);
   Serial.begin(115200);
   // Initialize Serial 1 connection (to central)
   Serial1.setTX(0);
@@ -344,7 +344,7 @@ bool mazeGame(){
   while (playingMaze){
     lastPressTime = 0;
     // If game is won, if joystick is pressed, reset game (debugging)
-    if (digitalRead(SW_pin) == LOW && checkWin() && millis() - lastPressTime > 550) {
+    if (digitalRead(SW_Pin) == LOW && checkMazeWin() && millis() - lastPressTime > 550) {
       resetGame();
       lastPressTime = millis();
     }
@@ -354,7 +354,7 @@ bool mazeGame(){
     if (moveDirection != 0 && !joystickLatched) {
       movePlayer(moveDirection);  // Update player position
       // Check if player reached the goal
-      if (winner()){
+      if (mazeWinner()){
         playingMaze = false;
         digitalWrite(mazeWinLED, HIGH);
       }  
@@ -392,7 +392,7 @@ bool wireGame(){
           Serial.println("Correct wire Pulled");
           stillPlaying = false;
           song3();
-          digitalWrite(wireLED, HIGH);
+          digitalWrite(wireWinLED, HIGH);
           
         }
         else{
@@ -425,7 +425,7 @@ void loop() {while (!Serial2.available()){}
       Serial.println("MAZE GAME TIME");
       Serial2.write((uint8_t)0); // Clear Serial2
       while(mazeGame()){}
-      Serial2.write((uint8)7); // Start codeGameMode
+      Serial2.write((uint8_t)7); // Start codeGameMode
     }
 
 }

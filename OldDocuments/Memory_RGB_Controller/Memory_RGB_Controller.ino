@@ -117,7 +117,6 @@ int leddelay = 300;
 int ledtime = 700;
 int butwait = 800;
 
-
 int buttonState[] = {0,0,0,0};
 int lastButtonState[] = {0,0,0,0};
 

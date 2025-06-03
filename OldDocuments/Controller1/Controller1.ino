@@ -342,6 +342,7 @@ bool mazeGame(){
   bool playingMaze = true;
   while (playingMaze){
     lastPressTime = 0;
+    // If game is won, if joystick is pressed, reset game (debugging)
     if (digitalRead(SW_pin) == LOW && CheckWin() && millis() - lastPressTime > 550) {
       resetGame();
       lastPressTime = millis();
@@ -351,10 +352,11 @@ bool mazeGame(){
 
     if (moveDirection != 0 && !joystickLatched) {
       movePlayer(moveDirection);  // Update player position
+      // Check if player reached the goal
       if (winner()){
         playingMaze = false;
         digitalWrite(mazeWinLED, HIGH);
-      }  // Check if player reached the goal
+      }  
       Serial.println("Current maze state: ");
       printMaze();
       joystickLatched = true; // Prevent repeat movement
@@ -365,7 +367,6 @@ bool mazeGame(){
     if (moveDirection == 0) {
       joystickLatched = false;
     }
-
 
     delay(50); // Small delay to prevent excessive polling
   }

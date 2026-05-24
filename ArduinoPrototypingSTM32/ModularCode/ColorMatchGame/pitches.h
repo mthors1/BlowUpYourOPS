@@ -91,5 +91,33 @@
 #define NOTE_CS8 4435
 #define NOTE_D8  4699
 #define NOTE_DS8 4978
+int NOTE_DUR;
 
+void play(int note, int dur) {
+  tone(speaker, note);
+  delay(dur * NOTE_DUR);
+  noTone(speaker);
+  delay(dur * NOTE_DUR / 3);
+}
 
+void playTone(int tone, int duration) {
+  for (long i = 0; i < duration * 100L; i += tone * 2) {
+    digitalWrite(speaker, HIGH);
+    delayMicroseconds(tone);
+    digitalWrite(speaker, LOW);
+    delayMicroseconds(tone);
+  }
+}
+
+void song3() {
+  play(NOTE_DS4, 2);
+  play(NOTE_E4, 2);
+  play(NOTE_F4, 5);
+  play(NOTE_F4, 2);
+  play(NOTE_FS4, 2);
+  play(NOTE_G4, 5);
+  play(NOTE_G4, 2);
+  play(NOTE_GS4, 2);
+  play(NOTE_A4, 5);
+  play(NOTE_C5, 9);
+}

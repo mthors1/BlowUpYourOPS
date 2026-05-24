@@ -1,3 +1,4 @@
+const int speaker = PD1;
 #include "pitches.h"
 
 const int B_LED = PD3;
@@ -9,7 +10,6 @@ const int G_BUT = PB8;
 const int Y_BUT = PB4;
 const int R_BUT = PB7;
 
-const int speaker = PD1;
 const int DONE_LED = PD2;
 
 const int LED_PINS[] = {B_LED, G_LED, Y_LED, R_LED};
@@ -36,23 +36,6 @@ long rand_num = 0;
 int rando = 0;
 int pinandtone = 0;
 int right = 0;
-int NOTE_DUR;
-
-void play(int note, int dur) {
-  tone(speaker, note);
-  delay(dur * NOTE_DUR);
-  noTone(speaker);
-  delay(dur * NOTE_DUR / 3);
-}
-
-void playTone(int tone, int duration) {
-  for (long i = 0; i < duration * 100L; i += tone * 2) {
-    digitalWrite(speaker, HIGH);
-    delayMicroseconds(tone);
-    digitalWrite(speaker, LOW);
-    delayMicroseconds(tone);
-  }
-}
 
 void setup() {
   Serial.begin(115200);
@@ -78,7 +61,9 @@ int getLEDIndex(int pin) {
   return 0;
 }
 
-void loop() {
+// Skeleton code developed by Sai Poojitha, https://www.tinkercad.com/things/9s8pjKKYGmk-memory-game 
+bool memoryGame() {
+  delay(700);
   int i;
 
   if (game_on == 0){
@@ -195,5 +180,13 @@ void loop() {
     currentlevel = 1;
     n_levels += 2;
     speedfactor += 1;
+    // digitalWrite(mem_game_LED, HIGH);
+    delay(2000);
+    return true;
   }
+  return false;
+}
+
+void loop() {
+  memoryGame();
 }

@@ -4,60 +4,65 @@ const int speaker = PB8;
 #include "pitches.h"
 
 // pin 1 is controlled by player
-const int redPin1 = PC13;
-const int greenPin1 = PE5;
-const int bluePin1 = PE4;
+const int redPin1 = PA8; // needs to say TIMx_CHy for PWM output
+const int greenPin1 = PB0;
+const int bluePin1 = PB1;
 
 // pin 2 is randomized/controlled by program
-const int redPin2 = PD7;
-const int greenPin2 = PD6;
-const int bluePin2 = PD3;
+const int redPin2 = PB3;
+const int greenPin2 = PB4;
+const int bluePin2 = PB5;
 
-const int redPot = PA0;   
-const int greenPot = PA1;  
-const int bluePot = PA2;   
+const int redPot = PA4;   // needs to say ADC123_INx for analog input
+const int greenPot = PA5;  
+const int bluePot = PA6;  
+
+int maxRead = 1023;
+
+HardwareSerial Serial2(PA3, PA2);
 
 int colors[8][3] = {
-  {0, 255, 255},   // Red
-  {0, 140, 255},   // Orange
-  {0, 0, 255},     // Yellow
-  {255, 0, 255},   // Green
-  {255, 0, 0},     // Cyan
-  {255, 255, 0},   // Blue
-  {128, 255, 0},   // Violet
-  {0, 255, 0}      // Magenta
+  {255, 0, 0},   // Red
+  {255, 116, 0},   // Orange
+  {255, 255, 0},     // Yellow
+  {0, 255, 0},   // Green
+  {0, 255, 255},     // Cyan
+  {0, 0, 255},   // Blue
+  {128, 0, 255},   // Violet
+  {255, 0, 255}      // Magenta
 };
 
 // if the game is too easy, we can add steps here to increase difficulty
-int steps[] = {0, 64, 128, 140, 192, 255}; 
+int steps[] = {0, 64, 116, 128, 192, 255}; 
 int numSteps = 6;
 
 int redIndex, greenIndex, blueIndex, colorDistance, randomIndex;
 
 void debugPrints() {
-  Serial.print("Random LED 1: (");
-  Serial.print(steps[redIndex]); Serial.print("r, ");
-  Serial.print(steps[greenIndex]); Serial.print("g, ");
-  Serial.print(steps[blueIndex]); Serial.print("b)       ");
+  Serial2.print("Random LED 1: (");
+  Serial2.print(steps[redIndex]); Serial2.print("r, ");
+  Serial2.print(steps[greenIndex]); Serial2.print("g, ");
+  Serial2.print(steps[blueIndex]); Serial2.print("b)       ");
 
-  Serial.print("Controlled LED 2: (");
-  Serial.print(colors[randomIndex][0]); Serial.print(", ");
-  Serial.print(colors[randomIndex][1]); Serial.print(", ");
-  Serial.print(colors[randomIndex][2]); Serial.print(")    ");
+  Serial2.print("Controlled LED 2: (");
+  Serial2.print(colors[randomIndex][0]); Serial2.print(", ");
+  Serial2.print(colors[randomIndex][1]); Serial2.print(", ");
+  Serial2.print(colors[randomIndex][2]); Serial2.print(")    color distance: ");
   
-  Serial.println(colorDistance);
+  Serial2.println(colorDistance);
 }
 
 int distanceCalc(int playRed, int playGreen, int playBlue) {
-  int redDist = colors[randomIndex][0] - playRed;
-  int blueDist = colors[randomIndex][1] - playBlue;
-  int greenDist = colors[randomIndex][2] - playGreen;
+  int redDist = abs(colors[randomIndex][0]) - abs(playRed);
+  int greenDist = abs(colors[randomIndex][1]) - abs(playGreen);
+  int blueDist = abs(colors[randomIndex][2]) - abs(playBlue);
 
   return abs(redDist) + abs(blueDist) + abs(greenDist);
 }
 
 void setup() {
-  Serial.begin(115200);
+  Serial2.begin(115200);
+  Serial2.println("ready");
   pinMode(speaker, OUTPUT);
   // pins for rgb game
   pinMode(redPin1, OUTPUT);
@@ -66,18 +71,17 @@ void setup() {
   pinMode(redPin2, OUTPUT);
   pinMode(greenPin2, OUTPUT);
   pinMode(bluePin2, OUTPUT);
-  pinMode(speaker, OUTPUT);
 
   randomSeed(analogRead(PA3));
   randomIndex = random(0, 8);
 }
 
 bool rgbGame() {
-  Serial.println("game started");
+  // Serial2.println("game started");
 
-  redIndex = map(analogRead(redPot), 0, 676, 0, numSteps); // max potentiometer reading for 3v3 on 5v scale is ~675
-  greenIndex = map(analogRead(greenPot), 0, 676, 0, numSteps);
-  blueIndex = map(analogRead(bluePot), 0, 676, 0, numSteps);
+  redIndex = map(analogRead(redPot), 0, maxRead, 0, numSteps);
+  greenIndex = map(analogRead(greenPot), 0, maxRead, 0, numSteps);
+  blueIndex = map(analogRead(bluePot), 0, maxRead, 0, numSteps);
 
   analogWrite(redPin1, steps[redIndex]);
   analogWrite(greenPin1, steps[greenIndex]);
@@ -93,7 +97,7 @@ bool rgbGame() {
 
   if (colorDistance <= 10) {
     song3(); 
-    Serial.println("MATCHED");
+    Serial2.println("MATCHED");
     delay(2000);               
     return true;
   } else {
@@ -104,5 +108,8 @@ bool rgbGame() {
 }
 
 void loop() {
-  rgbGame();
+  if (rgbGame()) {
+    randomIndex = random(0, 8);
+    Serial2.println("resetting...");
+  }
 }

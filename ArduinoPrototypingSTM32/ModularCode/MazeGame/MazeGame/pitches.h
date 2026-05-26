@@ -93,3 +93,52 @@
 #define NOTE_DS8 4978
 
 
+const int speaker = PC8;
+int NOTE_DUR = 30; // NOT TRANSFERRED
+// Speaker functions
+
+void play(int note, int dur) {
+  tone(speaker, note);
+  delay(dur * NOTE_DUR);
+  noTone(speaker);
+  delay(dur * NOTE_DUR / 3);
+}
+
+
+void playTone(int tone, int duration) {
+  for (long i = 0; i < duration * 100L; i += tone * 2) {
+    digitalWrite(speaker, HIGH);
+    delayMicroseconds(tone);
+    digitalWrite(speaker, LOW);
+    delayMicroseconds(tone);
+  }
+}
+
+
+void successSound() {
+  play(NOTE_E4, 1);
+  play(NOTE_G4, 1);
+  play(NOTE_C5, 2);
+}
+
+
+void failureSound() {
+  play(NOTE_C3, 3);
+  play(NOTE_E3, 2);
+  play(NOTE_A3, 1);
+}
+
+
+void song3() {
+  play(NOTE_DS4, 2);
+  play(NOTE_E4, 2);
+  play(NOTE_F4, 5);
+  play(NOTE_F4, 2);
+  play(NOTE_FS4, 2);
+  play(NOTE_G4, 5);
+  play(NOTE_G4, 2);
+  play(NOTE_GS4, 2);
+  play(NOTE_A4, 5);
+  play(NOTE_C5, 9);
+}
+

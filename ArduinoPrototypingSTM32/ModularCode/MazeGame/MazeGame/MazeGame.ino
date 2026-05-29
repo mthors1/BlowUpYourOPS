@@ -3,9 +3,9 @@ HardwareSerial Serial2(PA3, PA2);
 // Variable Initialization
 
 const int SW_pin = PD3; // digital pin connected to switch output
-const int X_pin = PD1;  // analog pin connected to X output
-const int Y_pin = PD2;  // analog pin connected to Y output
-//const int speaker = PC8;
+const int X_pin = PB0;  // analog pin connected to X output
+const int Y_pin = PB1;  // analog pin connected to Y output
+// const int speaker = PC8;
 
 int xpos;
 int ypos;
@@ -74,6 +74,8 @@ void generateMaze() {
 
 
 void resetMaze() { // Debugging
+  resetSound();
+
   Serial2.println("Resetting maze...");
   // Reset player position
   playerX = 0;
@@ -88,22 +90,19 @@ void resetMaze() { // Debugging
   generateMaze();
   // Print new maze for debugging
   Serial2.println("New maze generated:");
+
   printMaze();
 }
 
 
 void resetPlayerPos() {
+  resetSound();
+
   Serial2.println("Resetting player position...");
   // Reset player position
   playerX = 0;
   playerY = 0;
-  // Clear visited array
-  for (int i = 0; i < MAZE_SIZE; i++) {
-    for (int j = 0; j < MAZE_SIZE; j++) {
-      visited[i][j] = false;
-    }
-  }
-
+  
   printMaze();
 }
 
@@ -180,7 +179,7 @@ void printMaze() {
 }
 
 bool mazeGame(){
-  generateMaze();
+  resetMaze();
   
   Serial2.println("Generated maze: ");
   printMaze();
@@ -189,7 +188,7 @@ bool mazeGame(){
   while (playingMaze){
     lastPressTime = 0;
     // If game is won, if joystick is pressed, reset game (debugging)
-    if (digitalRead(SW_pin) == LOW && checkWin() && millis() - lastPressTime > 550) {
+    if (digitalRead(SW_pin) == LOW && !checkWin() && (millis() - lastPressTime > 550)) {
       resetPlayerPos();
       lastPressTime = millis();
     }
@@ -232,7 +231,6 @@ void setup() {
   Serial2.begin(115200);
   delay(50);
 
-
   randomSeed(micros());
 }
 
@@ -246,7 +244,7 @@ void loop() {
   gameDone = true;
 
   if (gameDone){
-    if (digitalRead(SW_pin) == LOW && checkWin() && millis() - lastPressTime > 550) {
+    if (digitalRead(SW_pin) == LOW && millis() - lastPressTime > 550) {
       gameDone = false;
       lastPressTime = millis();
     }

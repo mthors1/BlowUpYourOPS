@@ -121,6 +121,13 @@ void successSound() {
   play(NOTE_C5, 2);
 }
 
+void resetSound() {
+  play(NOTE_D5, 2);
+  play(NOTE_E5, 2);
+  play(NOTE_F5, 2);
+  play(NOTE_G5, 4);
+  //play(NOTE_F5, 2);
+}
 
 void failureSound() {
   play(NOTE_C3, 3);

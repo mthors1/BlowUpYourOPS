@@ -5,7 +5,12 @@ bool colorGame = false;
 
 
 void setup() {
+  SerialUSB.begin(115200);
+  SerialUSB.println("Trying to start");
+
+  delay(2000);
   
+  SerialUSB.println("Serial started!");
 }
 
 void loop() {

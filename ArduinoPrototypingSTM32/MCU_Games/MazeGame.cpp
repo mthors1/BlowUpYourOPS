@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #include "pitches.h"
 HardwareSerial Serial2(PA3, PA2);
 // Variable Initialization
@@ -222,6 +224,19 @@ bool mazeGame(){
 
 
 void setup() {
+  pinMode(SW_pin, INPUT_PULLUP);
+  pinMode(speaker, OUTPUT);
+  pinMode(mazeWinLED, OUTPUT);
+  
+
+  // Initialize Serial 2 connection (debugging)
+  Serial2.begin(115200);
+  delay(50);
+
+  randomSeed(micros());
+}
+
+void mazeGameInit() {
   pinMode(SW_pin, INPUT_PULLUP);
   pinMode(speaker, OUTPUT);
   pinMode(mazeWinLED, OUTPUT);

@@ -1,3 +1,5 @@
+#pragma once
+
 #ifndef wireGame_h
 #define wireGame_h
 

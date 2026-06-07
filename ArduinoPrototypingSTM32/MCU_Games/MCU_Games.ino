@@ -1,3 +1,10 @@
+#include "WireGame.h"
+#include "MemoryGame.h"
+#include "RgbGame.h"
+#include "MazeGame.h"
+#include "PasscodeGame.h"
+#include "pitches.h"
+
 // --- Global Initialization ---
 bool started = true; // Should be initialized as false, only true for testing
 bool memoryGame = false;
@@ -5,12 +12,20 @@ bool colorGame = false;
 
 
 void setup() {
-  SerialUSB.begin(115200);
-  SerialUSB.println("Trying to start");
+  Serial2.begin(115200);
+  Serial2.println("Trying to start");
 
   delay(2000);
   
-  SerialUSB.println("Serial started!");
+  Serial2.println("Serial started!");
+
+  randomSeed(micros());
+
+  wireGameInit();
+  memoryGameInit();
+  rgbGameInit();
+  mazeGameInit();
+  passcodeGameInit();
 }
 
 void loop() {

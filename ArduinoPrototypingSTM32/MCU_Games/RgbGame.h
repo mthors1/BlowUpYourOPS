@@ -1,5 +1,7 @@
-#ifndef rgbGame_h
-#define rgbGame_h
+#pragma once
+
+#ifndef RgbGame_h
+#define RgbGame_h
 
 void rgbGameInit();
 bool rgbGame();

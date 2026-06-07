@@ -56,9 +56,6 @@ void setup() {
 }
 
 void memoryGameInit() {
-  Serial.begin(115200);
-
-  randomSeed(micros());
   pinMode(B_BUT, INPUT_PULLUP);
   pinMode(G_BUT, INPUT_PULLUP);
   pinMode(Y_BUT, INPUT_PULLUP);

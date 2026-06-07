@@ -78,8 +78,6 @@ void setup() {
 }
 
 void rgbGameInit() {
-  Serial2.begin(115200);
-  Serial2.println("ready");
   pinMode(speaker, OUTPUT);
   // pins for rgb game
   pinMode(redPin1, OUTPUT);
@@ -89,7 +87,6 @@ void rgbGameInit() {
   pinMode(greenPin2, OUTPUT);
   pinMode(bluePin2, OUTPUT);
 
-  randomSeed(analogRead(PA3));
   randomIndex = random(0, 8);
 }
 

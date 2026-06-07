@@ -189,7 +189,7 @@ bool mazeGame(){
   bool playingMaze = true;
   while (playingMaze){
     lastPressTime = 0;
-    // If game is won, if joystick is pressed, reset game (debugging)
+    // If game is not won, if joystick is pressed, reset player position
     if (digitalRead(SW_pin) == LOW && !checkWin() && (millis() - lastPressTime > 550)) {
       resetPlayerPos();
       lastPressTime = millis();
@@ -240,13 +240,6 @@ void mazeGameInit() {
   pinMode(SW_pin, INPUT_PULLUP);
   pinMode(speaker, OUTPUT);
   pinMode(mazeWinLED, OUTPUT);
-  
-
-  // Initialize Serial 2 connection (debugging)
-  Serial2.begin(115200);
-  delay(50);
-
-  randomSeed(micros());
 }
 
 bool gameDone = false;

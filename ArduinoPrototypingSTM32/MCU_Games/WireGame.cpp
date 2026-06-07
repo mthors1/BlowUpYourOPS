@@ -127,9 +127,6 @@ void setup() {
 }
 
 void wireGameInit() {
-  Serial2.begin(115200);
-  printWireStatus();
-
   for (int i = 0; i < 4; i++) {
     pinMode(wirePins[i], INPUT_PULLUP);
     wirePulled[i] = false;
@@ -138,8 +135,6 @@ void wireGameInit() {
     Serial2.print(" state: ");
     //Serial.println(digitalRead(wirePins[i]));
   }
-  randomSeed(micros());
-
 }
 
 void loop() {

@@ -116,9 +116,19 @@ void playTone(int tone, int duration) {
 
 
 void wrongWireSound(){
+  play(NOTE_E3, 3);
+  play(NOTE_E3, 3);
   play(NOTE_C3, 3);
-  play(NOTE_E3, 2);
-  play(NOTE_A3, 1);
+  play(NOTE_C3, 3);
+  play(NOTE_A2, 10);
+}
+
+void correctWireSound() {
+  play(NOTE_E5, 3);
+  play(NOTE_E5, 3);
+  play(NOTE_G5, 3);
+  play(NOTE_G5, 3);
+  play(NOTE_B5, 10);
 }
 
 void successSound() {

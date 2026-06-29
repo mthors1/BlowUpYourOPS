@@ -33,8 +33,14 @@ void loop() {
     //wait on welcome state
   }
 
+  rgbGame();
 
-  // -- Game loop functionality
+  while (true) {
+    Serial2.println("Games Done!");
+  }
+  
+
+  //-- Game loop functionality for when we need to know when to send signal to other MCU
   // if (!Game1){
   //   buttonGame();
   // }
@@ -42,9 +48,5 @@ void loop() {
 
   // }
   // ...
-
-
- 
-
 }
 

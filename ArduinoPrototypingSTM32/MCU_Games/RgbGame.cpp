@@ -5,18 +5,18 @@ const int speaker = PB8;
 #include "pitches.h"
 
 // pin 1 is controlled by player
-const int redPin1 = PA8; // needs to say TIMx_CHy for PWM output
+const int redPin1 = PA3; // needs to say TIMx_CHy for PWM output
 const int greenPin1 = PB0;
 const int bluePin1 = PB1;
 
 // pin 2 is randomized/controlled by program
-const int redPin2 = PB3;
-const int greenPin2 = PB4;
-const int bluePin2 = PB5;
+const int redPin2 = PA0;
+const int greenPin2 = PA1;
+const int bluePin2 = PA2;
 
-const int redPot = PA4;   // needs to say ADC123_INx for analog input
-const int greenPot = PA5;  
-const int bluePot = PA6;  
+const int redPot = PC1;   // needs to say ADC123_INx for analog input
+const int greenPot = PC2;  
+const int bluePot = PC4;  
 
 int maxRead = 1023;
 

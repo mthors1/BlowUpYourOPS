@@ -94,4 +94,73 @@
 #define NOTE_D8  4699
 #define NOTE_DS8 4978
 
+const int speaker = PC8;
+int NOTE_DUR = 30; // NOT TRANSFERRED
+// Speaker functions
+
+void play(int note, int dur) {
+  tone(speaker, note);
+  delay(dur * NOTE_DUR);
+  noTone(speaker);
+  delay(dur * NOTE_DUR / 3);
+}
+
+void playTone(int tone, int duration) {
+  for (long i = 0; i < duration * 100L; i += tone * 2) {
+    digitalWrite(speaker, HIGH);
+    delayMicroseconds(tone);
+    digitalWrite(speaker, LOW);
+    delayMicroseconds(tone);
+  }
+}
+
+void song3() {
+  play(NOTE_DS4, 2);
+  play(NOTE_E4, 2);
+  play(NOTE_F4, 5);
+  play(NOTE_F4, 2);
+  play(NOTE_FS4, 2);
+  play(NOTE_G4, 5);
+  play(NOTE_G4, 2);
+  play(NOTE_GS4, 2);
+  play(NOTE_A4, 5);
+  play(NOTE_C5, 9);
+}
+
+void wrongWireSound(){
+  play(NOTE_E3, 3);
+  play(NOTE_E3, 3);
+  play(NOTE_C3, 3);
+  play(NOTE_C3, 3);
+  play(NOTE_A2, 10);
+}
+
+void correctWireSound() {
+  play(NOTE_E5, 3);
+  play(NOTE_E5, 3);
+  play(NOTE_G5, 3);
+  play(NOTE_G5, 3);
+  play(NOTE_B5, 10);
+}
+
+void successSound() {
+  play(NOTE_E4, 1);
+  play(NOTE_G4, 1);
+  play(NOTE_C5, 2);
+}
+
+void failureSound() {
+  play(NOTE_C3, 3);
+  play(NOTE_E3, 2);
+  play(NOTE_A3, 1);
+}
+
+void resetSound() {
+  play(NOTE_D5, 2);
+  play(NOTE_E5, 2);
+  play(NOTE_F5, 2);
+  play(NOTE_G5, 4);
+  //play(NOTE_F5, 2);
+}
+
 

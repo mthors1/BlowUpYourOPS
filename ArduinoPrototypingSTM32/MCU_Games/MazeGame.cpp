@@ -76,7 +76,7 @@ void generateMaze() {
 
 
 void resetMaze() { // Debugging
-  resetSound();
+  mazeResetSound();
 
   Serial2.println("Resetting maze...");
   // Reset player position
@@ -98,7 +98,7 @@ void resetMaze() { // Debugging
 
 
 void resetPlayerPos() {
-  resetSound();
+  mazeResetSound();
 
   Serial2.println("Resetting player position...");
   // Reset player position

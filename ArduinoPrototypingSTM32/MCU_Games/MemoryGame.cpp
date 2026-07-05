@@ -3,14 +3,14 @@
 const int speaker = PD1;
 #include "Pitches.h"
 
-const int B_LED = PD3;
-const int G_LED = PD6;
-const int Y_LED = PB3;
-const int R_LED = PB5;
-const int B_BUT = PD7;
-const int G_BUT = PB8;
-const int Y_BUT = PB4;
-const int R_BUT = PB7;
+const int B_LED = PE7;
+const int G_LED = PE10;
+const int Y_LED = PB11;
+const int R_LED = PB14;
+const int B_BUT = PE8;
+const int G_BUT = PE9;
+const int Y_BUT = PB12;
+const int R_BUT = PB13;
 
 const int DONE_LED = PD2;
 
@@ -19,7 +19,7 @@ const int BUT_PINS[] = {B_BUT, G_BUT, Y_BUT, R_BUT};
 const int tones[] = {1915, 1700, 1519, 1432, 2700}; // Last tone is for failure
 
 // Game settings
-int n_levels = 20;
+int n_levels = 5;
 int speedfactor = 3;
 int leddelay = 300;
 int ledtime = 700;

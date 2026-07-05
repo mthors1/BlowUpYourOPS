@@ -2,7 +2,7 @@
 #include "MemoryGame.h"
 #include "RgbGame.h"
 #include "MazeGame.h"
-// #include "PasscodeGame.h"
+#include "PasscodeGame.h"
 #include "Pitches.h"
 
 // --- Global Initialization ---
@@ -26,7 +26,7 @@ void setup() {
   memoryGameInit();
   rgbGameInit();
   mazeGameInit();
-  // passcodeGameInit();
+  passcodeGameInit();
 }
 
 void loop() {
@@ -37,7 +37,7 @@ void loop() {
   //wireGame();
   //memoryGame();
   rgbGame();
-  mazeGame();
+  memoryGame();
   // passcodeGame();
 
   while (true) {

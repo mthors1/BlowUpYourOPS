@@ -1,8 +1,7 @@
 #include <math.h>
 #include <Arduino.h>
 
-const int speaker = PB8;
-#include "pitches.h"
+#include "Pitches.h"
 
 // pin 1 is controlled by player
 const int redPin1 = PA3; // needs to say TIMx_CHy for PWM output
@@ -18,9 +17,9 @@ const int redPot = PC1;   // needs to say ADC123_INx for analog input
 const int greenPot = PC2;  
 const int bluePot = PC4;  
 
-int maxRead = 1023;
+const int speaker = PB8;
 
-HardwareSerial Serial2(PA3, PA2);
+int maxRead = 1023;
 
 int colors[8][3] = {
   {255, 0, 0},   // Red
@@ -61,7 +60,7 @@ int distanceCalc(int playRed, int playGreen, int playBlue) {
   return abs(redDist) + abs(blueDist) + abs(greenDist);
 }
 
-void setup() {
+void RgbGamesetup() {
   Serial2.begin(115200);
   Serial2.println("ready");
   pinMode(speaker, OUTPUT);
@@ -110,7 +109,7 @@ bool rgbGame() {
   colorDistance = distanceCalc(steps[redIndex], steps[greenIndex], steps[blueIndex]);
 
   if (colorDistance <= 10) {
-    song3(); 
+    song3(speaker); 
     Serial2.println("MATCHED");
     delay(2000);               
     return true;
@@ -121,7 +120,7 @@ bool rgbGame() {
   delay(10);
 }
 
-void loop() {
+void RgbGameloop() {
   if (rgbGame()) {
     randomIndex = random(0, 8);
     Serial2.println("resetting...");

@@ -1,10 +1,11 @@
 #include <Arduino.h>
 
-#include "pitches.h"
-HardwareSerial Serial2(PA3, PA2);
+#include "Pitches.h"
+
 
 // Wire game pins
 const int wirePins[4] = {PE4, PE5, PB4, PB5}; // array for digital pins connected to pull-wires
+const int speaker = PC8;
 
 // Wire game variables
 int correctWire; // initialize variable for randomly generated correct wire
@@ -57,11 +58,11 @@ bool wireGame(){
         if (i == correctWire){
           Serial2.println("Correct wire Pulled");
           snippingWires = false;
-          correctWireSound();
+          correctWireSound(speaker);
         }
         else{
           Serial2.println("Wrong wire pulled");
-          wrongWireSound();
+          wrongWireSound(speaker);
           //Send signal to subtract time
         }
       }
@@ -105,12 +106,12 @@ bool wireGame(){
   }
 
   Serial2.println("Wire game completed");
-  song3();
+  song3(speaker);
   return true;
 }
 
 
-void setup() {
+void WireGamesetup() {
   Serial2.begin(115200);
   printWireStatus();
 
@@ -137,6 +138,6 @@ void wireGameInit() {
   }
 }
 
-void loop() {
+void WireGameloop() {
   wireGame();
 }

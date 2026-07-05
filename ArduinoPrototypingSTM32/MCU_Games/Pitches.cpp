@@ -1,8 +1,8 @@
-#pragma once
+#include <Arduino.h>
 
-#ifndef Pitches_h
-#define Pitches_h
-
+/*************************************************
+ * Public Constants
+ *************************************************/
 #define NOTE_B0  31
 #define NOTE_C1  33
 #define NOTE_CS1 35
@@ -93,17 +93,70 @@
 #define NOTE_D8  4699
 #define NOTE_DS8 4978
 
+const int NOTE_DUR = 30; // NOT TRANSFERRED
+// Speaker functions
 
-extern const int NOTE_DUR;
+void play(int note, int dur, int speaker) {
+  tone(speaker, note);
+  delay(dur * NOTE_DUR);
+  noTone(speaker);
+  delay(dur * NOTE_DUR / 3);
+}
 
-void play(int note, int dur, int speaker);
-void playTone(int frequency, int duration, int speaker);
-void song3(int speaker);
-void wrongWireSound(int speaker);
-void correctWireSound(int speaker);
-void successSound(int speaker);
-void failureSound(int speaker);
-void resetSound(int speaker);
+void playTone(int frequency, int duration, int speaker) {
+  for (long i = 0; i < duration * 100L; i += frequency * 2) {
+    digitalWrite(speaker, HIGH);
+    delayMicroseconds(frequency);
+    digitalWrite(speaker, LOW);
+    delayMicroseconds(frequency);
+  }
+}
 
-#endif 
+void song3(int speaker) {
+  play(NOTE_DS4, 2, speaker);
+  play(NOTE_E4, 2, speaker);
+  play(NOTE_F4, 5, speaker);
+  play(NOTE_F4, 2, speaker);
+  play(NOTE_FS4, 2, speaker);
+  play(NOTE_G4, 5, speaker);
+  play(NOTE_G4, 2, speaker);
+  play(NOTE_GS4, 2, speaker);
+  play(NOTE_A4, 5, speaker);
+  play(NOTE_C5, 9, speaker);
+}
 
+void wrongWireSound(int speaker) {
+  play(NOTE_E3, 3, speaker);
+  play(NOTE_E3, 3, speaker);
+  play(NOTE_C3, 3, speaker);
+  play(NOTE_C3, 3, speaker);
+  play(NOTE_A2, 10, speaker);
+}
+
+void correctWireSound(int speaker) {
+  play(NOTE_E5, 3, speaker);
+  play(NOTE_E5, 3, speaker);
+  play(NOTE_G5, 3, speaker);
+  play(NOTE_G5, 3, speaker);
+  play(NOTE_B5, 10, speaker);
+}
+
+void successSound(int speaker) {
+  play(NOTE_E4, 1, speaker);
+  play(NOTE_G4, 1, speaker);
+  play(NOTE_C5, 2, speaker);
+}
+
+void failureSound(int speaker) {
+  play(NOTE_C3, 3, speaker);
+  play(NOTE_E3, 2, speaker);
+  play(NOTE_A3, 1, speaker);
+}
+
+void resetSound(int speaker) {
+  play(NOTE_D5, 2, speaker);
+  play(NOTE_E5, 2, speaker);
+  play(NOTE_F5, 2, speaker);
+  play(NOTE_G5, 4, speaker);
+  // play(NOTE_F5, 2, speaker);
+}

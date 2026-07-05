@@ -1,13 +1,12 @@
 #include <Arduino.h>
 
-#include "pitches.h"
-HardwareSerial Serial2(PA3, PA2);
+#include "Pitches.h"
 // Variable Initialization
 
-const int SW_pin = PD3; // digital pin connected to switch output
-const int X_pin = PB0;  // analog pin connected to X output
-const int Y_pin = PB1;  // analog pin connected to Y output
-// const int speaker = PC8;
+const int SW_pin = PC4; // digital pin connected to switch output
+const int X_pin = PC1;  // analog pin connected to X output
+const int Y_pin = PC2;  // analog pin connected to Y output
+const int speaker = PC8;
 
 int xpos;
 int ypos;
@@ -59,6 +58,19 @@ bool mazeIsSolvable() {
   return isSolvableDFS(playerX, playerY);
 }
 
+void printMaze() {
+  for (int i = 0; i < MAZE_SIZE; i++) {
+    for (int j = 0; j < MAZE_SIZE; j++) {
+      if (i == playerX && j == playerY) {
+        Serial2.print("P ");
+      } else {
+        Serial2.print(maze[i][j]);
+        Serial2.print(" ");
+      }
+    }
+    Serial2.println();
+  }
+}
 
 void generateMaze() {
   do {
@@ -76,7 +88,7 @@ void generateMaze() {
 
 
 void resetMaze() { // Debugging
-  mazeResetSound();
+  resetSound(speaker);
 
   Serial2.println("Resetting maze...");
   // Reset player position
@@ -98,7 +110,7 @@ void resetMaze() { // Debugging
 
 
 void resetPlayerPos() {
-  mazeResetSound();
+  resetSound(speaker);
 
   Serial2.println("Resetting player position...");
   // Reset player position
@@ -120,7 +132,7 @@ bool checkWin() {
 bool winner() {
   if (checkWin()) {
     delay(500);
-    song3();
+    song3(speaker);
     return true;
   }
   return false;
@@ -152,33 +164,21 @@ void movePlayer(int direction) {
       Serial2.print(playerX);
       Serial2.print(", ");
       Serial2.println(playerY);
-      successSound();
+      successSound(speaker);
     } 
     else {
-      failureSound(); // Wall hit sound
+      failureSound(speaker); // Wall hit sound
       Serial2.println("Hit a wall!");
     }
   } 
   else {
-    failureSound(); // Out-of-bounds treated as wall
+    failureSound(speaker); // Out-of-bounds treated as wall
     Serial2.println("Out of bounds!");
   }
 }
 
 
-void printMaze() {
-  for (int i = 0; i < MAZE_SIZE; i++) {
-    for (int j = 0; j < MAZE_SIZE; j++) {
-      if (i == playerX && j == playerY) {
-        Serial2.print("P ");
-      } else {
-        Serial2.print(maze[i][j]);
-        Serial2.print(" ");
-      }
-    }
-    Serial2.println();
-  }
-}
+
 
 bool mazeGame(){
   resetMaze();
@@ -223,7 +223,7 @@ bool mazeGame(){
 
 
 
-void setup() {
+void MazeGamesetup() {
   pinMode(SW_pin, INPUT_PULLUP);
   pinMode(speaker, OUTPUT);
   pinMode(mazeWinLED, OUTPUT);
@@ -243,7 +243,7 @@ void mazeGameInit() {
 }
 
 bool gameDone = false;
-void loop() {
+void MazeGameloop() {
   Serial2.println("Looping");
   if (!gameDone){
     mazeGame();

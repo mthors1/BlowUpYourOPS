@@ -2,13 +2,14 @@
 #include "MemoryGame.h"
 #include "RgbGame.h"
 #include "MazeGame.h"
-#include "PasscodeGame.h"
-#include "pitches.h"
+// #include "PasscodeGame.h"
+#include "Pitches.h"
 
 // --- Global Initialization ---
 bool started = true; // Should be initialized as false, only true for testing
-bool memoryGame = false;
-bool colorGame = false;
+
+HardwareSerial Serial2(PA3, PA2);
+
 
 
 void setup() {
@@ -25,7 +26,7 @@ void setup() {
   memoryGameInit();
   rgbGameInit();
   mazeGameInit();
-  passcodeGameInit();
+  // passcodeGameInit();
 }
 
 void loop() {
@@ -33,7 +34,11 @@ void loop() {
     //wait on welcome state
   }
 
+  //wireGame();
+  //memoryGame();
   rgbGame();
+  mazeGame();
+  // passcodeGame();
 
   while (true) {
     Serial2.println("Games Done!");

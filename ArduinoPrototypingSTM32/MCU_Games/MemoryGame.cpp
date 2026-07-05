@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
 const int speaker = PD1;
-#include "pitches.h"
+#include "Pitches.h"
 
 const int B_LED = PD3;
 const int G_LED = PD6;
@@ -39,7 +39,7 @@ int rando = 0;
 int pinandtone = 0;
 int right = 0;
 
-void setup() {
+void MemoryGamesetup() {
   Serial.begin(115200);
 
   randomSeed(micros());
@@ -101,7 +101,7 @@ bool memoryGame() {
       leddelay = ledtime / (1 + (speedfactor / n_levels) * (currentlevel - 1));
       pinandtone = n_array[i];
       digitalWrite(LED_PINS[pinandtone], HIGH);
-      playTone(tones[pinandtone], leddelay);
+      playTone(tones[pinandtone], leddelay, speaker);
       digitalWrite(LED_PINS[pinandtone], LOW);
       delay(200 / speedfactor);
     }
@@ -121,7 +121,7 @@ bool memoryGame() {
           buttonchange = 1;
           u_array[j] = i;
           digitalWrite(LED_PINS[i], HIGH);
-          playTone(tones[i], ledtime);
+          playTone(tones[i], ledtime, speaker);
           digitalWrite(LED_PINS[i], LOW);
           wait = 0;
           lastButtonState[i] = currentState;
@@ -146,7 +146,7 @@ bool memoryGame() {
     for (i = 0; i < 4; i++){
       digitalWrite(LED_PINS[i], HIGH);
     }
-    playTone(tones[4], ledtime);
+    playTone(tones[4], ledtime, speaker);
     for (i = 0; i < 4; i++){
       digitalWrite(LED_PINS[i], LOW); 
     }
@@ -154,7 +154,7 @@ bool memoryGame() {
     for (i = 0; i < 4; i++){
       digitalWrite(LED_PINS[i], HIGH);
     }
-    playTone(tones[4], ledtime);
+    playTone(tones[4], ledtime, speaker);
     for (i = 0; i < 4; i++){
       digitalWrite(LED_PINS[i], LOW); 
     }
@@ -178,17 +178,17 @@ bool memoryGame() {
       5, 9
     };
     int num_notes = sizeof(victory_notes) / sizeof(int);
-    NOTE_DUR = 25;
+    int NOTE_DUR_temp = 25;
 
     delay(500);
     for (int i = 0; i < num_notes; i++) {
       int led_index = i % 4;
       digitalWrite(LED_PINS[led_index], HIGH);
       tone(speaker, victory_notes[i]);
-      delay(victory_durs[i] * NOTE_DUR);
+      delay(victory_durs[i] * NOTE_DUR_temp);
       noTone(speaker);
       digitalWrite(LED_PINS[led_index], LOW);
-      delay(victory_durs[i] * NOTE_DUR / 3);
+      delay(victory_durs[i] * NOTE_DUR_temp / 3);
     }
     delay(500);
     game_on = 0;
@@ -202,6 +202,6 @@ bool memoryGame() {
   return false;
 }
 
-void loop() {
+void MemoryGameloop() {
   memoryGame();
 }

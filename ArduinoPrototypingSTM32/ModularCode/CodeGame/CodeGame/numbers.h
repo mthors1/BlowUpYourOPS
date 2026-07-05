@@ -17,3 +17,14 @@ void displayDigit(const int displayPins[], int digit) {
     digitalWrite(displayPins[i], digitPattern[digit][i]);
   }
 }
+
+void disableDigits() {
+  for (int i = 0; i < 3; i++)
+    digitalWrite(digits[i], HIGH);   // HIGH for common anode
+}
+
+void displayOneDigit(int digitIndex, int value) {
+  disableDigits();                 
+  displayDigit(segments, value);   
+  digitalWrite(digits[digitIndex], LOW);
+}

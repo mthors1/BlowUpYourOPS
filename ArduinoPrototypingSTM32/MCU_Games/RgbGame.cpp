@@ -4,14 +4,14 @@
 #include "Pitches.h"
 
 // pin 1 is controlled by player
-const int redPin1 = PA3; // needs to say TIMx_CHy for PWM output
+const int redPin1 = PB5; // Was A3 // needs to say TIMx_CHy for PWM output
 const int greenPin1 = PB0;
 const int bluePin1 = PB1;
 
 // pin 2 is randomized/controlled by program
 const int redPin2 = PA0;
 const int greenPin2 = PA1;
-const int bluePin2 = PA2;
+const int bluePin2 = PB7; // was A2
 
 const int redPot = PC1;   // needs to say ADC123_INx for analog input
 const int greenPot = PC2;  
@@ -86,38 +86,45 @@ void rgbGameInit() {
   pinMode(greenPin2, OUTPUT);
   pinMode(bluePin2, OUTPUT);
 
-  randomIndex = random(0, 8);
+  
 }
 
 bool rgbGame() {
-  // Serial2.println("game started");
+  randomSeed(micros());
+  randomIndex = random(0, 8);
+  bool playing = true;
+  while (playing){
+    // Serial2.println("game started");
 
-  redIndex = map(analogRead(redPot), 0, maxRead, 0, numSteps);
-  greenIndex = map(analogRead(greenPot), 0, maxRead, 0, numSteps);
-  blueIndex = map(analogRead(bluePot), 0, maxRead, 0, numSteps);
+    redIndex = map(analogRead(redPot), 0, maxRead, 0, numSteps);
+    greenIndex = map(analogRead(greenPot), 0, maxRead, 0, numSteps);
+    blueIndex = map(analogRead(bluePot), 0, maxRead, 0, numSteps);
 
-  analogWrite(redPin1, steps[redIndex]);
-  analogWrite(greenPin1, steps[greenIndex]);
-  analogWrite(bluePin1, steps[blueIndex]);
+    analogWrite(redPin1, steps[redIndex]);
+    analogWrite(greenPin1, steps[greenIndex]);
+    analogWrite(bluePin1, steps[blueIndex]);
 
-  // randomly selected color from fixed list
-  analogWrite(redPin2,   colors[randomIndex][0]);
-  analogWrite(greenPin2, colors[randomIndex][1]);
-  analogWrite(bluePin2,  colors[randomIndex][2]);
+    // randomly selected color from fixed list
+    analogWrite(redPin2,   colors[randomIndex][0]);
+    analogWrite(greenPin2, colors[randomIndex][1]);
+    analogWrite(bluePin2,  colors[randomIndex][2]);
 
-  debugPrints();
-  colorDistance = distanceCalc(steps[redIndex], steps[greenIndex], steps[blueIndex]);
+    debugPrints();
+    colorDistance = distanceCalc(steps[redIndex], steps[greenIndex], steps[blueIndex]);
 
-  if (colorDistance <= 10) {
-    song3(speaker); 
-    Serial2.println("MATCHED");
-    delay(2000);               
-    return true;
-  } else {
-    noTone(speaker);
-    return false;
+    if (colorDistance <= 10) {
+      song3(speaker); 
+      Serial2.println("MATCHED");
+      delay(2000);  
+      playing = false;             
+      //return true;
+    } else {
+      noTone(speaker);
+      //return false;
+    }
+    delay(10);
   }
-  delay(10);
+  return true;
 }
 
 void RgbGameloop() {

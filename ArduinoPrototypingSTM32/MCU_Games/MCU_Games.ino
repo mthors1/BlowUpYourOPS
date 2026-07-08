@@ -20,24 +20,28 @@ void setup() {
   
   Serial2.println("Serial started!");
 
-  randomSeed(micros());
+  
 
-  wireGameInit();
-  memoryGameInit();
-  rgbGameInit();
-  mazeGameInit();
-  passcodeGameInit();
+  // wireGameInit();
+  
+  
+  // mazeGameInit();
+  // passcodeGameInit();
 }
 
 void loop() {
   while (!started){
     //wait on welcome state
   }
-
+  
   //wireGame();
   //memoryGame();
+  rgbGameInit();
   rgbGame();
+  
+  memoryGameInit();
   memoryGame();
+
   // passcodeGame();
 
   while (true) {

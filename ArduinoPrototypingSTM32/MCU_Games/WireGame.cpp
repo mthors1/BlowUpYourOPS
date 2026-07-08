@@ -4,8 +4,8 @@
 
 
 // Wire game pins
-const int wirePins[4] = {PE4, PE5, PB4, PB5}; // array for digital pins connected to pull-wires
-const int speaker = PC8;
+const int wirePins[4] = {PC11, PC9, PA15, PD0}; // array for digital pins connected to pull-wires
+const int speaker = PC6;
 
 // Wire game variables
 int correctWire; // initialize variable for randomly generated correct wire
